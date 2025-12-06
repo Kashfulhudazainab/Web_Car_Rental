@@ -8,21 +8,37 @@ export default function Navbar() {
   const [open, setOpen] = useState(false); // mobile menu
   const [theme, setTheme] = useState("light"); // theme toggle
 
-  // Load theme from localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.body.className = savedTheme + "-theme";
-  }, []);
+useEffect(() => {
+  const savedTheme = localStorage.getItem("theme") || "light";
+  setTheme(savedTheme);
 
-  const toggleMenu = () => setOpen(!open);
+  // Tailwind dark mode
+  if (savedTheme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.body.className = newTheme + "-theme";
-    localStorage.setItem("theme", newTheme);
-  };
+  // Optional: also keep your body theme class for custom CSS
+  document.body.className = savedTheme + "-theme";
+}, []);
+
+const toggleTheme = () => {
+  const newTheme = theme === "light" ? "dark" : "light";
+  setTheme(newTheme);
+
+  // Tailwind dark mode
+  if (newTheme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+
+  // Keep your custom CSS classes
+  document.body.className = newTheme + "-theme";
+
+  localStorage.setItem("theme", newTheme);
+};
 
   const pages = [
     { name: "Home", href: "#" },
@@ -32,6 +48,10 @@ export default function Navbar() {
     { name: "About", href: "#" },
     { name: "Contact", href: "#" },
   ];
+
+  const toggleMenu = () => {
+  setOpen(!open);
+};
 
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md transition-colors duration-300">
@@ -56,12 +76,14 @@ export default function Navbar() {
             ))}
 
             {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              className="ml-4 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300"
-            >
-              {theme === "light" ? <HiMoon size={20} /> : <HiSun size={20} />}
-            </button>
+           <button
+  onClick={toggleTheme}
+  className={`p-2 rounded transition-colors duration-300
+    ${theme === "light" ? "bg-gray-100 hover:bg-gray-200 text-gray-800" 
+                         : "bg-gray-800 hover:bg-gray-700 text-yellow-300"}`}
+>
+  {theme === "light" ? <HiMoon size={20} /> : <HiSun size={20} />}
+</button>
 
             {/* Login/Signup button */}
             <button className="ml-4 primary">Login / Signup</button>
